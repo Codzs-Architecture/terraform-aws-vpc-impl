@@ -180,8 +180,8 @@ locals {
 ################################################################################
 
 module "vpc" {
-  source = "Codzs-Architecture/vpc-module/aws"
-  version = "5.5.3"
+  source  = "Codzs-Architecture/vpc/aws"
+  version = "5.5.3"  
 
   name = local.name
   cidr = local.vpc_cidr
@@ -268,7 +268,7 @@ module "vpc" {
 ################################################################################
 
 module "vpc_endpoints" {
-  source  = "Codzs-Architecture/vpc-module/aws//modules/vpc-endpoints"
+  source  = "Codzs-Architecture/vpc/aws//modules/vpc-endpoints"
   version = "5.5.3"
 
   vpc_id = module.vpc.vpc_id
@@ -296,7 +296,7 @@ module "vpc_endpoints" {
 }
 
 module "vpc_endpoints_nocreate" {
-  source  = "Codzs-Architecture/vpc-module/aws//modules/vpc-endpoints"
+  source  = "Codzs-Architecture/vpc/aws//modules/vpc-endpoints"
   version = "5.5.3"
   
   create = false
