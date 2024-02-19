@@ -1,12 +1,12 @@
 data "aws_region" "current" {}
-# data "aws_availability_zones" "available" {}
+data "aws_availability_zones" "available" {}
 
 locals {
   name   = "${var.vpc_name}"
   region = data.aws_region.current.name
 
   vpc_cidr = "${var.cidr_range}"
-  azs      = slice(["ap-southeast-2a", "ap-southeast-2b", "ap-southeast-2c"], 0, 3)
+  azs      = slice(data.aws_availability_zones.available.names, 0, 3)
 
   network_acls = {
     default_inbound = [
