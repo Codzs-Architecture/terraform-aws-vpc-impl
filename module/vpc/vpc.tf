@@ -164,7 +164,6 @@ locals {
   }
 
   tags = {
-    "${var.name_tag_key}" : "VPC",
     "${var.environment_tag_key}" : "${var.environment}",
     "${var.owner_tag_key}" : "${var.owner_tag_value}",
     "${var.costcenter_tag_key}" : "${var.costcenter_tag_value}",
