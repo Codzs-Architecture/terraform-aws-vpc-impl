@@ -3,9 +3,9 @@ variable "cidr_range" {
   description = "CIDR range for the account"
 }
 
-variable "vpc_name" {
+variable "vpc_suffix" {
   type    = string
-  description = "Name of the VPC"
+  description = "Name of the VPC suffix"
 }
 
 variable "environment" {

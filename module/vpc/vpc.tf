@@ -2,31 +2,47 @@ data "aws_region" "current" {}
 data "aws_availability_zones" "available" {}
 
 locals {
-  name   = "${var.vpc_name}"
+  name   = "vpc-${var.vpc_suffix}"
   region = data.aws_region.current.name
 
   vpc_cidr = "${var.cidr_range}"
-  azs      = slice(data.aws_availability_zones.available.names, 0, 3)
+  azs      = slice(data.aws_availability_zones.available.names, 0, 2)
 
   network_acls = {
     default_inbound = [
       {
-        rule_number = 900
+        rule_number = 890
         rule_action = "allow"
         from_port   = 1024
         to_port     = 65535
         protocol    = "tcp"
         cidr_block  = "0.0.0.0/0"
       },
+      {
+        rule_number = 900
+        rule_action = "allow"
+        from_port   = 1024
+        to_port     = 65535
+        protocol    = "tcp"
+        ipv6_cidr_block  = "::/0"
+      },
     ]
     default_outbound = [
+      {
+        rule_number = 890
+        rule_action = "allow"
+        from_port   = 32768
+        to_port     = 65535
+        protocol    = "tcp"
+        cidr_block  = "0.0.0.0/0"
+      },
       {
         rule_number = 900
         rule_action = "allow"
         from_port   = 32768
         to_port     = 65535
         protocol    = "tcp"
-        cidr_block  = "0.0.0.0/0"
+        ipv6_cidr_block  = "::/0"
       },
     ]
     public_inbound = [
@@ -39,12 +55,28 @@ locals {
         cidr_block  = "0.0.0.0/0"
       },
       {
-        rule_number = 110
+        rule_number     = 110
+        rule_action     = "allow"
+        from_port       = 80
+        to_port         = 80
+        protocol        = "tcp"
+        ipv6_cidr_block = "::/0"
+      },
+      {
+        rule_number = 120
         rule_action = "allow"
         from_port   = 443
         to_port     = 443
         protocol    = "tcp"
         cidr_block  = "0.0.0.0/0"
+      },
+      {
+        rule_number     = 130
+        rule_action     = "allow"
+        from_port       = 443
+        to_port         = 443
+        protocol        = "tcp"
+        ipv6_cidr_block = "::/0"
       },
       {
         rule_number = 120
@@ -53,22 +85,6 @@ locals {
         to_port     = 22
         protocol    = "tcp"
         cidr_block  = "0.0.0.0/0"
-      },
-      {
-        rule_number = 130
-        rule_action = "allow"
-        from_port   = 3389
-        to_port     = 3389
-        protocol    = "tcp"
-        cidr_block  = "0.0.0.0/0"
-      },
-      {
-        rule_number     = 140
-        rule_action     = "allow"
-        from_port       = 80
-        to_port         = 80
-        protocol        = "tcp"
-        ipv6_cidr_block = "::/0"
       }
     ]
     public_outbound = [
@@ -83,21 +99,29 @@ locals {
       {
         rule_number = 110
         rule_action = "allow"
+        from_port   = 80
+        to_port     = 80
+        protocol    = "tcp"
+        ipv6_cidr_block  = "::/0"
+      },
+      {
+        rule_number = 120
+        rule_action = "allow"
         from_port   = 443
         to_port     = 443
         protocol    = "tcp"
         cidr_block  = "0.0.0.0/0"
       },
       {
-        rule_number = 120
+        rule_number = 130
         rule_action = "allow"
-        from_port   = 1433
-        to_port     = 1433
+        from_port   = 443
+        to_port     = 443
         protocol    = "tcp"
-        cidr_block  = "10.10.100.0/22"
+        ipv6_cidr_block  = "::/0"
       },
       {
-        rule_number = 130
+        rule_number = 140
         rule_action = "allow"
         from_port   = 22
         to_port     = 22
@@ -105,21 +129,13 @@ locals {
         cidr_block  = "10.10.100.0/22"
       },
       {
-        rule_number = 140
+        rule_number = 150
         rule_action = "allow"
-        icmp_code   = -1
-        icmp_type   = 8
-        protocol    = "icmp"
-        cidr_block  = "10.10.0.0/22"
+        from_port   = 22
+        to_port     = 22
+        protocol    = "tcp"
+        ipv6_cidr_block  = "::/0"
       },
-      {
-        rule_number     = 150
-        rule_action     = "allow"
-        from_port       = 90
-        to_port         = 90
-        protocol        = "tcp"
-        ipv6_cidr_block = "::/0"
-      }
     ]
     private_inbound = [
       {
@@ -129,6 +145,14 @@ locals {
         to_port     = 80
         protocol    = "tcp"
         cidr_block  = "0.0.0.0/0"
+      },
+      {
+        rule_number = 110
+        rule_action = "allow"
+        from_port   = 80
+        to_port     = 80
+        protocol    = "tcp"
+        ipv6_cidr_block  = "::/0"
       }
     ]
     private_outbound = [
@@ -139,26 +163,50 @@ locals {
         to_port     = 80
         protocol    = "tcp"
         cidr_block  = "0.0.0.0/0"
+      },
+      {
+        rule_number = 110
+        rule_action = "allow"
+        from_port   = 80
+        to_port     = 80
+        protocol    = "tcp"
+        ipv6_cidr_block  = "::/0"
       }
     ]
     database_inbound = [
       {
         rule_number = 100
         rule_action = "allow"
-        from_port   = 80
-        to_port     = 80
+        from_port   = 3306
+        to_port     = 3306
         protocol    = "tcp"
         cidr_block  = "0.0.0.0/0"
-      }
+      },
+      {
+        rule_number = 110
+        rule_action = "allow"
+        from_port   = 3306
+        to_port     = 3306
+        protocol    = "tcp"
+        ipv6_cidr_block  = "::/0"
+      },
     ]
     database_outbound = [
       {
         rule_number = 100
         rule_action = "allow"
-        from_port   = 80
-        to_port     = 80
+        from_port   = 3306
+        to_port     = 3306
         protocol    = "tcp"
         cidr_block  = "0.0.0.0/0"
+      },
+      {
+        rule_number = 110
+        rule_action = "allow"
+        from_port   = 3306
+        to_port     = 3306
+        protocol    = "tcp"
+        ipv6_cidr_block  = "::/0"
       }
     ]
   }
@@ -193,10 +241,10 @@ module "vpc" {
   # elasticache_subnets = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 12)]
   # redshift_subnets    = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 16)]
 
-  public_subnet_names = ["Public Subnet One - ${var.environment}", "Public Subnet Two - ${var.environment}", "Public Subnet Three - ${var.environment}"]
-  private_subnet_names = ["Application Subnet One - ${var.environment}", "Application Subnet Two - ${var.environment}", "Application Subnet Three - ${var.environment}"]
-  database_subnet_names    = ["DB Subnet One - ${var.environment}", "DB Subnet Two - ${var.environment}", "DB Subnet Three - ${var.environment}"]
-  # intra_subnet_names       = ["Infra Subnet One - ${var.environment}", "Infra Subnet Two - ${var.environment}", "Infra Subnet Three - ${var.environment}"]
+  public_subnet_names = ["public-subnet-one-${var.vpc_suffix}", "public-subnet-two-${var.vpc_suffix}", "public-subnet-three-${var.vpc_suffix}"]
+  private_subnet_names = ["application-subnet-one-${var.vpc_suffix}", "application-subnet-two-${var.vpc_suffix}", "application-subnet-three-${var.vpc_suffix}"]
+  database_subnet_names    = ["db-subnet-one-${var.vpc_suffix}", "db-subnet-two-${var.vpc_suffix}", "db-subnet-three-${var.vpc_suffix}"]
+  # intra_subnet_names       = ["Infra Subnet One - ${var.vpc_suffix}", "Infra Subnet Two - ${var.environment}", "Infra Subnet Three - ${var.environment}"]
   # elasticache_subnet_names = ["Elasticache Subnet One", "Elasticache Subnet Two"]
   # redshift_subnet_names    = ["Redshift Subnet One", "Redshift Subnet Two", "Redshift Subnet Three"]
 
@@ -266,37 +314,37 @@ module "vpc" {
 # VPC Endpoints Module
 ################################################################################
 
-module "vpc_endpoints" {
-  source  = "Codzs-Architecture/vpc/aws//modules/vpc-endpoints"
-  version = "5.5.3"
+# module "vpc_endpoints" {
+#   source  = "Codzs-Architecture/vpc/aws//modules/vpc-endpoints"
+#   version = "5.5.3"
 
-  vpc_id = module.vpc.vpc_id
+#   vpc_id = module.vpc.vpc_id
 
-  create_security_group      = true
-  security_group_name_prefix = "${local.name}-vpc-endpoints-"
-  security_group_description = "VPC endpoint security group"
-  security_group_rules = {
-    ingress_https = {
-      description = "HTTPS from VPC"
-      cidr_blocks = [module.vpc.vpc_cidr_block]
-    }
-  }
+#   create_security_group      = true
+#   security_group_name_prefix = "${local.name}-vpc-endpoints-"
+#   security_group_description = "VPC endpoint security group"
+#   security_group_rules = {
+#     ingress_https = {
+#       description = "HTTPS from VPC"
+#       cidr_blocks = [module.vpc.vpc_cidr_block]
+#     }
+#   }
 
-  endpoints = {
-    ecs_telemetry = {
-      create              = false
-      service             = "ecs-telemetry"
-      private_dns_enabled = true
-      subnet_ids          = module.vpc.private_subnets
-    },
-  }
+#   endpoints = {
+#     ecs_telemetry = {
+#       create              = false
+#       service             = "ecs-telemetry"
+#       private_dns_enabled = true
+#       subnet_ids          = module.vpc.private_subnets
+#     },
+#   }
 
-  tags = local.tags
-}
+#   tags = local.tags
+# }
 
-module "vpc_endpoints_nocreate" {
-  source  = "Codzs-Architecture/vpc/aws//modules/vpc-endpoints"
-  version = "5.5.3"
+# module "vpc_endpoints_nocreate" {
+#   source  = "Codzs-Architecture/vpc/aws//modules/vpc-endpoints"
+#   version = "5.5.3"
   
-  create = false
-}
+#   create = false
+# }
