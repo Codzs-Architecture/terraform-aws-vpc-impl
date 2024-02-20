@@ -79,7 +79,7 @@ locals {
         ipv6_cidr_block = "::/0"
       },
       {
-        rule_number = 120
+        rule_number = 140
         rule_action = "allow"
         from_port   = 22
         to_port     = 22
