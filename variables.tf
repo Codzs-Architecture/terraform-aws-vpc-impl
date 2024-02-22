@@ -1,4 +1,4 @@
 variable "account_customizations_name" {
-  type    = string
+  type        = string
   description = "Account identifier as provided for the account in aft-request"
 }

@@ -1,31 +1,51 @@
 module "vpc_network_non_production_workload" {
-  count = var.account_customizations_name == "Network_Non_Production" ? 1 : 0 
-  source = "./module/vpc"
-  cidr_range = "10.16.0.0/16"
-  vpc_suffix = "np"
+  count       = var.account_customizations_name == "Network_Non_Production" ? 1 : 0
+  source      = "./module/vpc"
+  cidr_range  = "10.16.0.0/16"
+  vpc_suffix  = "np"
   environment = "np"
+
+  tags = merge(
+    { "${module.tags_client.environment_tag_key}" = "np" },
+    local.tags
+  )
 }
 
 module "vpc_network_non_production_workload_management" {
-  count = var.account_customizations_name == "Network_Non_Production" ? 1 : 0 
-  source = "./module/vpc"
-  cidr_range = "10.17.0.0/16"
-  vpc_suffix = "mgmt-np"
+  count       = var.account_customizations_name == "Network_Non_Production" ? 1 : 0
+  source      = "./module/vpc"
+  cidr_range  = "10.17.0.0/16"
+  vpc_suffix  = "mgmt-np"
   environment = "np"
+
+  tags = merge(
+    { "${module.tags_client.environment_tag_key}" = "np" },
+    local.tags
+  )
 }
 
 module "vpc_network_production_workload" {
-  count = var.account_customizations_name == "Network_Production" ? 1 : 0 
-  source = "./module/vpc"
-  cidr_range = "10.36.0.0/16"
-  vpc_suffix = "prod"
+  count       = var.account_customizations_name == "Network_Production" ? 1 : 0
+  source      = "./module/vpc"
+  cidr_range  = "10.36.0.0/16"
+  vpc_suffix  = "prod"
   environment = "prod"
+
+  tags = merge(
+    { "${module.tags_client.environment_tag_key}" = "prod" },
+    local.tags
+  )
 }
 
 module "vpc_network_production_workload_management" {
-  count = var.account_customizations_name == "Network_Production" ? 1 : 0 
-  source = "./module/vpc"
-  cidr_range = "10.37.0.0/16"
-  vpc_suffix = "mgmt-prod"
+  count       = var.account_customizations_name == "Network_Production" ? 1 : 0
+  source      = "./module/vpc"
+  cidr_range  = "10.37.0.0/16"
+  vpc_suffix  = "mgmt-prod"
   environment = "prod"
+
+  tags = merge(
+    { "${module.tags_client.environment_tag_key}" = "prod" },
+    local.tags
+  )
 }

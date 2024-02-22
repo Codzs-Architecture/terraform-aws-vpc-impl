@@ -5,7 +5,7 @@ locals {
   name   = "vpc-${var.vpc_suffix}"
   region = data.aws_region.current.name
 
-  vpc_cidr = "${var.cidr_range}"
+  vpc_cidr = var.cidr_range
   azs      = slice(data.aws_availability_zones.available.names, 0, 2)
 
   network_acls = {
@@ -19,12 +19,12 @@ locals {
         cidr_block  = "0.0.0.0/0"
       },
       {
-        rule_number = 900
-        rule_action = "allow"
-        from_port   = 1024
-        to_port     = 65535
-        protocol    = "tcp"
-        ipv6_cidr_block  = "::/0"
+        rule_number     = 900
+        rule_action     = "allow"
+        from_port       = 1024
+        to_port         = 65535
+        protocol        = "tcp"
+        ipv6_cidr_block = "::/0"
       },
     ]
     default_outbound = [
@@ -37,12 +37,12 @@ locals {
         cidr_block  = "0.0.0.0/0"
       },
       {
-        rule_number = 900
-        rule_action = "allow"
-        from_port   = 32768
-        to_port     = 65535
-        protocol    = "tcp"
-        ipv6_cidr_block  = "::/0"
+        rule_number     = 900
+        rule_action     = "allow"
+        from_port       = 32768
+        to_port         = 65535
+        protocol        = "tcp"
+        ipv6_cidr_block = "::/0"
       },
     ]
     public_inbound = [
@@ -97,12 +97,12 @@ locals {
         cidr_block  = "0.0.0.0/0"
       },
       {
-        rule_number = 110
-        rule_action = "allow"
-        from_port   = 80
-        to_port     = 80
-        protocol    = "tcp"
-        ipv6_cidr_block  = "::/0"
+        rule_number     = 110
+        rule_action     = "allow"
+        from_port       = 80
+        to_port         = 80
+        protocol        = "tcp"
+        ipv6_cidr_block = "::/0"
       },
       {
         rule_number = 120
@@ -113,12 +113,12 @@ locals {
         cidr_block  = "0.0.0.0/0"
       },
       {
-        rule_number = 130
-        rule_action = "allow"
-        from_port   = 443
-        to_port     = 443
-        protocol    = "tcp"
-        ipv6_cidr_block  = "::/0"
+        rule_number     = 130
+        rule_action     = "allow"
+        from_port       = 443
+        to_port         = 443
+        protocol        = "tcp"
+        ipv6_cidr_block = "::/0"
       },
       {
         rule_number = 140
@@ -129,12 +129,12 @@ locals {
         cidr_block  = "10.10.100.0/22"
       },
       {
-        rule_number = 150
-        rule_action = "allow"
-        from_port   = 22
-        to_port     = 22
-        protocol    = "tcp"
-        ipv6_cidr_block  = "::/0"
+        rule_number     = 150
+        rule_action     = "allow"
+        from_port       = 22
+        to_port         = 22
+        protocol        = "tcp"
+        ipv6_cidr_block = "::/0"
       },
     ]
     private_inbound = [
@@ -147,12 +147,12 @@ locals {
         cidr_block  = "0.0.0.0/0"
       },
       {
-        rule_number = 110
-        rule_action = "allow"
-        from_port   = 80
-        to_port     = 80
-        protocol    = "tcp"
-        ipv6_cidr_block  = "::/0"
+        rule_number     = 110
+        rule_action     = "allow"
+        from_port       = 80
+        to_port         = 80
+        protocol        = "tcp"
+        ipv6_cidr_block = "::/0"
       }
     ]
     private_outbound = [
@@ -165,12 +165,12 @@ locals {
         cidr_block  = "0.0.0.0/0"
       },
       {
-        rule_number = 110
-        rule_action = "allow"
-        from_port   = 80
-        to_port     = 80
-        protocol    = "tcp"
-        ipv6_cidr_block  = "::/0"
+        rule_number     = 110
+        rule_action     = "allow"
+        from_port       = 80
+        to_port         = 80
+        protocol        = "tcp"
+        ipv6_cidr_block = "::/0"
       }
     ]
     database_inbound = [
@@ -183,12 +183,12 @@ locals {
         cidr_block  = "0.0.0.0/0"
       },
       {
-        rule_number = 110
-        rule_action = "allow"
-        from_port   = 3306
-        to_port     = 3306
-        protocol    = "tcp"
-        ipv6_cidr_block  = "::/0"
+        rule_number     = 110
+        rule_action     = "allow"
+        from_port       = 3306
+        to_port         = 3306
+        protocol        = "tcp"
+        ipv6_cidr_block = "::/0"
       },
     ]
     database_outbound = [
@@ -201,25 +201,17 @@ locals {
         cidr_block  = "0.0.0.0/0"
       },
       {
-        rule_number = 110
-        rule_action = "allow"
-        from_port   = 3306
-        to_port     = 3306
-        protocol    = "tcp"
-        ipv6_cidr_block  = "::/0"
+        rule_number     = 110
+        rule_action     = "allow"
+        from_port       = 3306
+        to_port         = 3306
+        protocol        = "tcp"
+        ipv6_cidr_block = "::/0"
       }
     ]
   }
 
-  tags = {
-    "${var.environment_tag_key}" : "${var.environment}",
-    "${var.owner_tag_key}" : "${var.owner_tag_value}",
-    "${var.costcenter_tag_key}" : "${var.costcenter_tag_value}",
-    "${var.application_tag_key}" : "${var.application_tag_value}",
-    "${var.platform_tag_key}" : "${var.platform_tag_value}",
-    "${var.organization_tag_key}" : "${var.organization_tag_value}",
-    "${var.department_tag_key}" : "${var.department_tag_value}"
-  }
+  tags = var.tags
 }
 
 ################################################################################
@@ -228,22 +220,22 @@ locals {
 
 module "vpc" {
   source  = "Codzs-Architecture/vpc/aws"
-  version = "5.5.3"  
+  version = "5.5.3"
 
   name = local.name
   cidr = local.vpc_cidr
 
-  azs                 = local.azs
-  private_subnets     = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k)]
-  public_subnets      = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 4)]
-  database_subnets    = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 8)]
+  azs              = local.azs
+  private_subnets  = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k)]
+  public_subnets   = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 4)]
+  database_subnets = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 8)]
   # intra_subnets       = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 20)]
   # elasticache_subnets = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 12)]
   # redshift_subnets    = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 16)]
 
-  public_subnet_names = ["public-subnet-one-${var.vpc_suffix}", "public-subnet-two-${var.vpc_suffix}", "public-subnet-three-${var.vpc_suffix}"]
-  private_subnet_names = ["application-subnet-one-${var.vpc_suffix}", "application-subnet-two-${var.vpc_suffix}", "application-subnet-three-${var.vpc_suffix}"]
-  database_subnet_names    = ["db-subnet-one-${var.vpc_suffix}", "db-subnet-two-${var.vpc_suffix}", "db-subnet-three-${var.vpc_suffix}"]
+  public_subnet_names   = ["public-subnet-one-${var.vpc_suffix}", "public-subnet-two-${var.vpc_suffix}", "public-subnet-three-${var.vpc_suffix}"]
+  private_subnet_names  = ["application-subnet-one-${var.vpc_suffix}", "application-subnet-two-${var.vpc_suffix}", "application-subnet-three-${var.vpc_suffix}"]
+  database_subnet_names = ["db-subnet-one-${var.vpc_suffix}", "db-subnet-two-${var.vpc_suffix}", "db-subnet-three-${var.vpc_suffix}"]
   # intra_subnet_names       = ["Infra Subnet One - ${var.vpc_suffix}", "Infra Subnet Two - ${var.environment}", "Infra Subnet Three - ${var.environment}"]
   # elasticache_subnet_names = ["Elasticache Subnet One", "Elasticache Subnet Two"]
   # redshift_subnet_names    = ["Redshift Subnet One", "Redshift Subnet Two", "Redshift Subnet Three"]
@@ -254,22 +246,22 @@ module "vpc" {
 
   manage_default_network_acl = true
 
-  public_dedicated_network_acl   = true
-  public_inbound_acl_rules       = concat(local.network_acls["default_inbound"], local.network_acls["public_inbound"])
-  public_outbound_acl_rules      = concat(local.network_acls["default_outbound"], local.network_acls["public_outbound"])
+  public_dedicated_network_acl = true
+  public_inbound_acl_rules     = concat(local.network_acls["default_inbound"], local.network_acls["public_inbound"])
+  public_outbound_acl_rules    = concat(local.network_acls["default_outbound"], local.network_acls["public_outbound"])
 
-  private_dedicated_network_acl   = true
-  private_inbound_acl_rules       = concat(local.network_acls["default_inbound"], local.network_acls["private_inbound"])
-  private_outbound_acl_rules      = concat(local.network_acls["default_outbound"], local.network_acls["private_outbound"])
+  private_dedicated_network_acl = true
+  private_inbound_acl_rules     = concat(local.network_acls["default_inbound"], local.network_acls["private_inbound"])
+  private_outbound_acl_rules    = concat(local.network_acls["default_outbound"], local.network_acls["private_outbound"])
 
-  database_dedicated_network_acl   = true
-  database_inbound_acl_rules       = concat(local.network_acls["default_inbound"], local.network_acls["database_inbound"])
-  database_outbound_acl_rules      = concat(local.network_acls["default_outbound"], local.network_acls["database_outbound"])
+  database_dedicated_network_acl = true
+  database_inbound_acl_rules     = concat(local.network_acls["default_inbound"], local.network_acls["database_inbound"])
+  database_outbound_acl_rules    = concat(local.network_acls["default_outbound"], local.network_acls["database_outbound"])
 
-  redshift_dedicated_network_acl = false
-  elasticache_dedicated_network_acl= false
-  intra_dedicated_network_acl = false
-  outpost_dedicated_network_acl = false
+  redshift_dedicated_network_acl    = false
+  elasticache_dedicated_network_acl = false
+  intra_dedicated_network_acl       = false
+  outpost_dedicated_network_acl     = false
 
   create_database_subnet_route_table    = true
   create_elasticache_subnet_route_table = false
@@ -345,6 +337,6 @@ module "vpc" {
 # module "vpc_endpoints_nocreate" {
 #   source  = "Codzs-Architecture/vpc/aws//modules/vpc-endpoints"
 #   version = "5.5.3"
-  
+
 #   create = false
 # }
